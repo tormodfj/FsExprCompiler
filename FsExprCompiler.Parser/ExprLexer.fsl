@@ -1,0 +1,39 @@
+﻿{
+module ExprLexer 
+
+open ExprParser
+open System
+open Microsoft.FSharp.Text.Lexing
+
+let ops =
+    [
+        "+", ADD;
+        "-", SUB;
+        "*", MUL;
+        "/", DIV;
+    ] |> Map.ofList
+
+let parens =
+    [
+        "(", LPAREN;
+        ")", RPAREN;
+    ] |> Map.ofList
+}
+
+let char        = ['A'-'Z']
+let identifier  = char+
+let digit       = ['0'-'9']
+let int         = '-'? digit+
+let float       = '-'? digit+ '.' digit+
+let whitespace  = [' ' '\t']
+let operator    = "+" | "-" | "*" | "/"
+let parenthesis = "(" | ")"
+
+rule tokenize = parse
+| whitespace    { tokenize lexbuf }   
+| int           { DOUBLE(Double.Parse(LexBuffer<_>.LexemeString lexbuf)) }
+| float         { DOUBLE(Double.Parse(LexBuffer<_>.LexemeString lexbuf)) }
+| identifier    { ID(LexBuffer<_>.LexemeString lexbuf) }
+| operator      { ops.[LexBuffer<_>.LexemeString lexbuf] }
+| parenthesis   { parens.[LexBuffer<_>.LexemeString lexbuf] }
+| eof           { EOF }

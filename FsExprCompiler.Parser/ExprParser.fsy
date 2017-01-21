@@ -1,0 +1,21 @@
+﻿%{
+open Expr
+%}
+
+%token <double> DOUBLE
+%token <string> ID
+
+%token ADD SUB
+%token MUL DIV
+%token LPAREN RPAREN
+%token EOF
+
+%start start
+%type <Expr.expr> start
+
+%%
+
+start:
+	| { Value(Double(0.0)) }
+
+%%
