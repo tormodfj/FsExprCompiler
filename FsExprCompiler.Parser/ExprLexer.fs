@@ -4,6 +4,7 @@ module ExprLexer
 
 open ExprParser
 open System
+open System.Globalization
 open Microsoft.FSharp.Text.Lexing
 
 let ops =
@@ -20,7 +21,12 @@ let parens =
         ")", RPAREN;
     ] |> Map.ofList
 
-# 23 "ExprLexer.fs"
+let lexeme lexbuf = LexBuffer<_>.LexemeString lexbuf
+
+let toDouble input = Double.Parse(input, CultureInfo.InvariantCulture)
+
+
+# 29 "ExprLexer.fs"
 let trans : uint16[] array = 
     [| 
     (* State 0 *)
@@ -59,39 +65,39 @@ and tokenize  (lexbuf : Microsoft.FSharp.Text.Lexing.LexBuffer<_>) = _fslex_toke
 and _fslex_tokenize  _fslex_state lexbuf =
   match _fslex_tables.Interpret(_fslex_state,lexbuf) with
   | 0 -> ( 
-# 33 "ExprLexer.fsl"
-                                 tokenize lexbuf 
-# 64 "ExprLexer.fs"
+# 39 "ExprLexer.fsl"
+                                 lexbuf |> tokenize 
+# 70 "ExprLexer.fs"
           )
   | 1 -> ( 
-# 34 "ExprLexer.fsl"
-                                 DOUBLE(Double.Parse(LexBuffer<_>.LexemeString lexbuf)) 
-# 69 "ExprLexer.fs"
+# 40 "ExprLexer.fsl"
+                                 DOUBLE(lexbuf |> lexeme |> toDouble) 
+# 75 "ExprLexer.fs"
           )
   | 2 -> ( 
-# 35 "ExprLexer.fsl"
-                                 DOUBLE(Double.Parse(LexBuffer<_>.LexemeString lexbuf)) 
-# 74 "ExprLexer.fs"
+# 41 "ExprLexer.fsl"
+                                 DOUBLE(lexbuf |> lexeme |> toDouble) 
+# 80 "ExprLexer.fs"
           )
   | 3 -> ( 
-# 36 "ExprLexer.fsl"
-                                 ID(LexBuffer<_>.LexemeString lexbuf) 
-# 79 "ExprLexer.fs"
+# 42 "ExprLexer.fsl"
+                                 ID(lexbuf |> lexeme) 
+# 85 "ExprLexer.fs"
           )
   | 4 -> ( 
-# 37 "ExprLexer.fsl"
-                                 ops.[LexBuffer<_>.LexemeString lexbuf] 
-# 84 "ExprLexer.fs"
+# 43 "ExprLexer.fsl"
+                                 ops.[lexbuf |> lexeme] 
+# 90 "ExprLexer.fs"
           )
   | 5 -> ( 
-# 38 "ExprLexer.fsl"
-                                 parens.[LexBuffer<_>.LexemeString lexbuf] 
-# 89 "ExprLexer.fs"
+# 44 "ExprLexer.fsl"
+                                 parens.[lexbuf |> lexeme] 
+# 95 "ExprLexer.fs"
           )
   | 6 -> ( 
-# 39 "ExprLexer.fsl"
+# 45 "ExprLexer.fsl"
                                  EOF 
-# 94 "ExprLexer.fs"
+# 100 "ExprLexer.fs"
           )
   | _ -> failwith "tokenize"
 

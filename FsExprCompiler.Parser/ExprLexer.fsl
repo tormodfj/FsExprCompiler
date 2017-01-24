@@ -3,6 +3,7 @@ module ExprLexer
 
 open ExprParser
 open System
+open System.Globalization
 open Microsoft.FSharp.Text.Lexing
 
 let ops =
@@ -18,6 +19,11 @@ let parens =
         "(", LPAREN;
         ")", RPAREN;
     ] |> Map.ofList
+
+let lexeme lexbuf = LexBuffer<_>.LexemeString lexbuf
+
+let toDouble input = Double.Parse(input, CultureInfo.InvariantCulture)
+
 }
 
 let char        = ['A'-'Z']
@@ -30,10 +36,10 @@ let operator    = "+" | "-" | "*" | "/"
 let parenthesis = "(" | ")"
 
 rule tokenize = parse
-| whitespace    { tokenize lexbuf }   
-| int           { DOUBLE(Double.Parse(LexBuffer<_>.LexemeString lexbuf)) }
-| float         { DOUBLE(Double.Parse(LexBuffer<_>.LexemeString lexbuf)) }
-| identifier    { ID(LexBuffer<_>.LexemeString lexbuf) }
-| operator      { ops.[LexBuffer<_>.LexemeString lexbuf] }
-| parenthesis   { parens.[LexBuffer<_>.LexemeString lexbuf] }
+| whitespace    { lexbuf |> tokenize }   
+| int           { DOUBLE(lexbuf |> lexeme |> toDouble) }
+| float         { DOUBLE(lexbuf |> lexeme |> toDouble) }
+| identifier    { ID(lexbuf |> lexeme) }
+| operator      { ops.[lexbuf |> lexeme] }
+| parenthesis   { parens.[lexbuf |> lexeme] }
 | eof           { EOF }
