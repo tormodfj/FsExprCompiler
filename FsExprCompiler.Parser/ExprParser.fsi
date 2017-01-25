@@ -2,22 +2,22 @@
 module ExprParser
 type token = 
   | EOF
-  | LPAREN
-  | RPAREN
-  | MUL
-  | DIV
   | ADD
   | SUB
+  | MUL
+  | DIV
+  | LPAREN
+  | RPAREN
   | ID of (string)
   | DOUBLE of (double)
 type tokenId = 
     | TOKEN_EOF
-    | TOKEN_LPAREN
-    | TOKEN_RPAREN
-    | TOKEN_MUL
-    | TOKEN_DIV
     | TOKEN_ADD
     | TOKEN_SUB
+    | TOKEN_MUL
+    | TOKEN_DIV
+    | TOKEN_LPAREN
+    | TOKEN_RPAREN
     | TOKEN_ID
     | TOKEN_DOUBLE
     | TOKEN_end_of_input
@@ -25,6 +25,8 @@ type tokenId =
 type nonTerminalId = 
     | NONTERM__startstart
     | NONTERM_start
+    | NONTERM_expr
+    | NONTERM_value
 /// This function maps tokens to integer indexes
 val tagOfToken: token -> int
 

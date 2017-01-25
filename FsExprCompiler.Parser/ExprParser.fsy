@@ -5,10 +5,11 @@ open Expr
 %token <double> DOUBLE
 %token <string> ID
 
-%token ADD SUB
-%token MUL DIV
-%token LPAREN RPAREN
+%token ADD SUB MUL DIV LPAREN RPAREN
 %token EOF
+
+%left ADD SUB // Lowest precedence
+%left MUL DIV // Highest precedence
 
 %start start
 %type <Expr.expr> start
@@ -16,6 +17,19 @@ open Expr
 %%
 
 start:
-	| { Value(Double(0.0)) }
+	|                    { Value(Double(0.0)) }
+	| expr EOF           { $1 }
+
+expr:
+	| LPAREN expr RPAREN { $2 }
+	| value              { Value($1) }
+	| expr ADD expr      { Expr($1, Add, $3) }
+	| expr SUB expr      { Expr($1, Sub, $3) }
+	| expr MUL expr      { Expr($1, Mul, $3) }
+	| expr DIV expr      { Expr($1, Div, $3) }
+
+value:
+	| DOUBLE             { Double($1) }
+	| ID                 { Variable($1) }
 
 %%
