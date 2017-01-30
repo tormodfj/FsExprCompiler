@@ -13,3 +13,15 @@ let expr =  lexbuf |> parse
 printfn "%A" expr
 
 Console.ReadKey(true) |> ignore
+
+let calculator = Compiler.compile input
+let resolver var =
+    match var with
+    | "FOO" -> 100.0
+    | "BAR" -> 50.0
+    | _ -> failwith "Unrecognized variable"
+let result = calculator resolver
+
+printfn "%f" result
+
+Console.ReadKey(true) |> ignore
