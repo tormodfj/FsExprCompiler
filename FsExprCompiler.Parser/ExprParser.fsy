@@ -33,5 +33,3 @@ expr:
 value:
 	| DOUBLE                { Double($1) }
 	| ID                    { Variable($1) }
-
-%%
